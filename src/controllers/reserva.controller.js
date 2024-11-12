@@ -1,9 +1,12 @@
+import User from "../models/usuario.model.js";
 import Reserva from "../models/reserva.model.js";
 
 // Crear una nueva reserva
 export const crearReserva = async (req, res) => {
-    const { id_usuario, id_vehiculo, fecha_inicio, fecha_fin } = req.body;
+    const { id_vehiculo, fecha_inicio, fecha_fin } = req.body;
     try {
+        // Obtenemos el id del usuario autenticado
+        const { id_usuario } = await User.obtenerPorId(req.user.id);  
         const reservaCreada = await Reserva.crear({
             id_usuario,
             id_vehiculo,
@@ -57,8 +60,9 @@ export const obtenerReservaPorId = async (req, res) => {
 
 // Obtener todas las reservas de un usuario
 export const obtenerReservasPorUsuario = async (req, res) => {
-    const { id_usuario } = req.params;
     try {
+        // Obtenemos el id del usuario autenticado
+        const { id_usuario } = await User.obtenerPorId(req.user.id);  
         const reservas = await Reserva.obtenerPorUsuario(id_usuario);
         if (reservas.length === 0) {
             return res.status(404).json({ message: "No se encontraron reservas para este usuario" });
@@ -67,7 +71,7 @@ export const obtenerReservasPorUsuario = async (req, res) => {
     } catch (error) {
         console.error("Error:", error.message);
         res.status(400).json({
-            message: "Error al obtener las reservas",
+            message: "Error al obtener las reservas del usuario",
             error: error.message
         });
     }
@@ -85,7 +89,7 @@ export const obtenerReservasPorVehiculo = async (req, res) => {
     } catch (error) {
         console.error("Error:", error.message);
         res.status(400).json({
-            message: "Error al obtener las reservas",
+            message: "Error al obtener las reservas del vehículo",
             error: error.message
         });
     }

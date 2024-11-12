@@ -1,9 +1,12 @@
+import User from "../models/usuario.model.js";
 import Comentario from "../models/calificacion.model.js";
 
 // Crear un comentario
 export const crearComentario = async (req, res) => {
-    const { id_usuario, id_vehiculo, calificacion, comentario } = req.body;
+    const { id_vehiculo, calificacion, comentario } = req.body;
     try {
+        // Obtenemos el id del usuario autenticado
+        const { id_usuario } = await User.obtenerPorId(req.user.id);  
         const comentarioCreado = await Comentario.crear({
             id_usuario,
             id_vehiculo,
@@ -23,7 +26,7 @@ export const crearComentario = async (req, res) => {
     }
 };
 
-// Obtiene todas las comentarios
+// Obtiene todos los comentarios
 export const obtenerTodosLosComentarios = async (req, res) => {
     try {
         const comentarios = await Comentario.obtenerTodas();
@@ -31,7 +34,7 @@ export const obtenerTodosLosComentarios = async (req, res) => {
     } catch (error) {
         console.error("Error:", error.message);
         res.status(400).json({
-            message: "Error al obtener las comentarios",
+            message: "Error al obtener los comentarios",
             error: error.message
         });
     }
@@ -72,8 +75,9 @@ export const obtenerComentariosPorVehiculo = async (req, res) => {
 
 // Obtener todos los comentarios de un usuario
 export const obtenerComentariosPorUsuario = async (req, res) => {
-    const { id_usuario } = req.params;
     try {
+        // Obtenemos el id del usuario autenticado
+        const { id_usuario } = await User.obtenerPorId(req.user.id); 
         const comentarios = await Comentario.obtenerPorUsuario(id_usuario);
         res.json(comentarios);
     } catch (error) {

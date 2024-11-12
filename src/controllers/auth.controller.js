@@ -52,7 +52,9 @@ export const login = async (req, res) => {
             return res.status(400).json({ message: "Contraseña incorrecta" });
         }
         // Se crea un token con cookies
-        const token = await createAccessToken({ id: usuarioEncontrado.id_usuario });
+        const token = await createAccessToken({
+            id: usuarioEncontrado.id_usuario,
+        });
         res.cookie("token", token, {
             httpOnly: process.env.NODE_ENV !== "development",
             secure: true,
