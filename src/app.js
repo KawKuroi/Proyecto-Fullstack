@@ -5,8 +5,15 @@ import authRoutes from "./routes/auth.routes.js";
 import reservaRoutes from "./routes/reserva.routes.js";
 import vehiculosRoutes from "./routes/vehiculos.routes.js";
 import calificacionRoutes from "./routes/calificacion.routes.js";
+import cors from 'cors'
 
 const app = express();
+
+app.use(cors({
+    origin: 'http://127.0.0.1:5500', // Permite cualquier origen (debe usarse para permitir cualquier dominio)
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Métodos HTTP permitidos
+    credentials: true, // Permite el uso de cookies si es necesario
+}));
 app.use(morgan("dev"));
 app.use(express.json())
 app.use(cookieParser());

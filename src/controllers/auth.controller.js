@@ -15,15 +15,20 @@ export const registro = async (req, res) => {
             correo: correo,
             contrasena: contrasenaEncriptada,
         });
-        // Se genera un token con cookies
+
         const token = await createAccessToken({ id: newUser.id_usuario });
         res.cookie("token", token, {
             httpOnly: process.env.NODE_ENV !== "development",
             secure: true,
             sameSite: "none",
         });
-        // Se imprime la info
-        res.json({ message: "Usuario creado correctamente" });
+
+        res.json({
+            id: newUser.id_usuario,
+            nombre: newUser.nombre,
+            correo: newUser.correo
+        });
+
         console.log("Usuario creado correctamente");
     } catch (error) {
         console.log("Error: ", error.message);
@@ -60,8 +65,12 @@ export const login = async (req, res) => {
             secure: true,
             sameSite: "none",
         });
-        // Se imprime la info
-        res.json({ message: "El usuario ingresó correctamente" });
+
+        res.json({
+            id: usuarioEncontrado.id_usuario,
+            nombre: usuarioEncontrado.nombre,
+            correo: usuarioEncontrado.correo
+        });
         console.log("El usuario ingresó correctamente");
     } catch (error) {
         console.log("Error: ", error.message);
@@ -82,4 +91,15 @@ export const logout = async (req, res) => {
     });
     res.json({ message: "Se cerró sesión correctamente" });
     console.log("Se cerró sesión correctamente");
+};
+
+export const profile = async (req, res) => {
+    try {
+        const usuarioEncontrado = await User.obtenerPorId(req.user.id);
+        if (!usuarioEncontrado)
+            return res.status(400).json({ message: "Usuario no encontrado" });
+        return res.json(usuarioEncontrado);
+    } catch (error) {
+        return console.log(error);
+    }
 };
