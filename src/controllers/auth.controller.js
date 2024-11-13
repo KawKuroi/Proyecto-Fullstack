@@ -7,6 +7,12 @@ export const registro = async (req, res) => {
     // Se obtiene por metodo POST el nombre, correo y contraseña
     const { nombre, correo, contrasena } = req.body;
     try {
+        
+        /*console.log(correo)
+        const userFound = await User.obtenerPorCorreo(correo)
+            return res.status(400).json(userFound);*/
+            
+
         // Se encripta la contraseña
         const contrasenaEncriptada = await bscrypt.hash(contrasena, 10);
         // Se crea el usuario a partir del modelo
@@ -22,13 +28,15 @@ export const registro = async (req, res) => {
             secure: true,
             sameSite: "none",
         });
-
+        
         res.json({
             id: newUser.id_usuario,
             nombre: newUser.nombre,
             correo: newUser.correo
         });
-
+        
+        console.log(newUser)
+        
         console.log("Usuario creado correctamente");
     } catch (error) {
         console.log("Error: ", error.message);

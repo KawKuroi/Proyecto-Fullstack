@@ -5,22 +5,19 @@ class Usuario {
     static async crear(usuarioData) {
         const connection = await connectDB();
         console.log("Conexion con usuario exitosa");
-        // Se ingresan las columnas que tiene la BD
         const {
             nombre,
             correo,
             contrasena,
             tipo_usuario = "cliente",
         } = usuarioData;
-        // Se insertan los datos a partir de las columnas ingresadas
         const [result] = await connection.execute(
             `INSERT INTO usuarios (nombre, correo, contrasena, tipo_usuario) VALUES (?, ?, ?, ?)`,
             [nombre, correo, contrasena, tipo_usuario]
         );
-        // imprime el usuario creado
-        return result;
+        const usuarioCreado = await this.obtenerPorCorreo(correo);
+        return usuarioCreado;
     }
-
     // Esta funcion realiza una busqueda en la base de datos en la columna correo y devuelve un usuario
     static async obtenerPorCorreo(correo) {
         const connection = await connectDB();
